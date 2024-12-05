@@ -106,7 +106,26 @@ import java.util.List;
 
     @Override
     public Response getUserBookingHistory(String userId) {
-        return null;
+        Response response = new Response();
+
+
+        try {
+            User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new OurException("User Not Found"));
+            UserDTO userDTO = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
+            response.setStatusCode(200);
+            response.setMessage("Success");
+            response.setUser(userDTO);
+
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+
+        } catch (Exception e) {
+
+            response.setStatusCode(500);
+            response.setMessage("Error Getting Booking History " + e.getMessage());
+        }
+        return response;
     }
 
     @Override
