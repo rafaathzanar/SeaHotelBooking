@@ -1,5 +1,6 @@
 package com.zanar.hotelbooking.service.impl;
 
+import com.zanar.hotelbooking.dto.BookingDTO;
 import com.zanar.hotelbooking.dto.Response;
 import com.zanar.hotelbooking.entity.Booking;
 import com.zanar.hotelbooking.entity.Room;
@@ -68,7 +69,25 @@ public class BookingService implements IBookingService {
 
     @Override
     public Response findBookingByConfirmationCode(String confirmationCode) {
-        return null;
+        Response response = new Response();
+
+        try {
+            Booking booking = bookingRepository.findByBookingConfirmationCode(confirmationCode).orElseThrow(() -> new OurException("Booking Not Found"));
+            BookingDTO bookingDTO = Utils.mapBookingEntityToBookingDTOPlusBookedRooms(booking, true);
+            response.setStatusCode(200);
+            response.setMessage("Success");
+            response.setBooking(bookingDTO);
+
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error Finding a booking: " + e.getMessage());
+
+        }
+        return response;
     }
 
     @Override
