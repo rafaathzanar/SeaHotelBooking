@@ -16,6 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
     public class UserService implements IUserService {
 
@@ -87,7 +89,19 @@ import org.springframework.stereotype.Service;
 
     @Override
     public Response getAllUsers() {
-        return null;
+        Response response = new Response();
+        try {
+            List<User> userList = userRepository.findAll();
+            List<UserDTO> userDTOList = Utils.mapUserListEntityToUserListDTO(userList);
+            response.setStatusCode(200);
+            response.setMessage("Success");
+            response.setUserList(userDTOList);
+
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error getting users " + e.getMessage());
+        }
+        return response;
     }
 
     @Override
