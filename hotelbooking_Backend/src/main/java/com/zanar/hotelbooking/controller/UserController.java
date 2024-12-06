@@ -24,21 +24,22 @@ public class UserController {
 
     }
 
-    @GetMapping("/getbyId/{userId}")
+    @GetMapping("/getbyId/{userID}")
     public ResponseEntity<Response> getUserById(@PathVariable("userID") String userId){
         Response response = userService.getUserById(userId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
 
     }
 
-    @DeleteMapping("/delete/{userId}")
+    @DeleteMapping("/delete/{userID}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> deleteUser(@PathVariable("userID") String userId){
         Response response = userService.deleteUser(userId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
 
     }
 
-    @GetMapping("/getLoggedinProfileInfo")
+    @GetMapping("/getLoggedinProfileInfo/{userID}")
     public ResponseEntity<Response> getLoggedinProfileInfo(@PathVariable("userID") String userId){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,7 +49,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/getUserBookingHistory/{userId}")
+    @GetMapping("/getUserBookingHistory/{userID}")
     public ResponseEntity<Response> getUserBookingHistory(@PathVariable("userID") String userId){
         Response response = userService.getUserBookingHistory(userId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
